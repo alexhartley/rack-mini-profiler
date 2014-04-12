@@ -522,9 +522,13 @@ module Rack
     # * you have disabled auto append behaviour throught :auto_inject => false flag
     # * you do not want script to be automatically appended for the current page. You can also call cancel_auto_inject
     def get_profile_script(env)
-
+      root_url = if env["action_controller.instance"]
+        env["action_controller.instance"].url_for("#{@config.base_url_path}")
+      else
+        "#{env['SCRIPT_NAME']}#{@config.base_url_path}"
+      end
       settings = {
-       :path => "#{env['SCRIPT_NAME']}#{@config.base_url_path}",
+       :path => "#{root_url}",
        :version => MiniProfiler::VERSION,
        :position => @config.position,
        :showTrivial => false,
@@ -564,4 +568,3 @@ module Rack
   end
 
 end
-
